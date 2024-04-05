@@ -34,6 +34,7 @@ public class BookRepositoryImpl implements BookRepository {
         BookEntity entity = new BookEntity();
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 entity.setId(id);
