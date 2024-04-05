@@ -39,5 +39,13 @@ CREATE TABLE author_book(
     FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE CASCADE
 );
 ```
+
+add db.properties file to resources folder
+
+```bash
+db.url=your db connection url
+db.user=your db username
+db.password=your db password
+```
 DB diagram
 ![diagram](https://github.com/AidarArt/REST_API/blob/master/screenshots/rest_db.png)
