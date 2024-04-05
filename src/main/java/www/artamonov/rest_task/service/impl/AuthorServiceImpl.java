@@ -1,12 +1,20 @@
 package www.artamonov.rest_task.service.impl;
 
 import www.artamonov.rest_task.model.AuthorEntity;
+import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.repository.impl.AuthorRepositoryImpl;
 import www.artamonov.rest_task.repository.mapper.AuthorRepository;
 import www.artamonov.rest_task.service.mapper.AuthorService;
 
+import java.util.List;
+
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository repository = new AuthorRepositoryImpl();
+
+    @Override
+    public List<AuthorEntity> getAll() {
+        return repository.findAll();
+    }
 
     @Override
     public AuthorEntity getById(Long id) {
@@ -30,5 +38,10 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorEntity entity = repository.findById(id);
         repository.delete(id);
         return entity;
+    }
+
+    @Override
+    public List<BookEntity> getBooks(Long id) {
+        return repository.getBooks(id);
     }
 }

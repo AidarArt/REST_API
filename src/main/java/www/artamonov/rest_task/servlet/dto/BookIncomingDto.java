@@ -1,15 +1,17 @@
 package www.artamonov.rest_task.servlet.dto;
 
-public class BookOutGoingDto {
+import www.artamonov.rest_task.model.PublishingHouseEntity;
+
+public class BookIncomingDto {
     private Long id;
     private String name;
     private int publicationYear;
-    private PublishingHouseOutGoingDto publishingHouse;
+    private PublishingHouseEntity publishingHouse;
 
-    public BookOutGoingDto() {
+    public BookIncomingDto() {
     }
 
-    public BookOutGoingDto(Long id, String name, int publicationYear, PublishingHouseOutGoingDto publishingHouse) {
+    public BookIncomingDto(Long id, String name, int publicationYear, PublishingHouseEntity publishingHouse) {
         this.id = id;
         this.name = name;
         this.publicationYear = publicationYear;
@@ -40,11 +42,11 @@ public class BookOutGoingDto {
         this.publicationYear = publicationYear;
     }
 
-    public PublishingHouseOutGoingDto getPublishingHouse() {
+    public PublishingHouseEntity getPublishingHouse() {
         return publishingHouse;
     }
 
-    public void setPublishingHouse(PublishingHouseOutGoingDto publishingHouse) {
+    public void setPublishingHouse(PublishingHouseEntity publishingHouse) {
         this.publishingHouse = publishingHouse;
     }
 }
