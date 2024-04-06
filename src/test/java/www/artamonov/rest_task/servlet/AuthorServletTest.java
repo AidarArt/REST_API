@@ -6,13 +6,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
-import www.artamonov.rest_task.service.mapper.PublishingHouseService;
+import www.artamonov.rest_task.service.mapper.AuthorService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,19 +21,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class PublishingHoseServletTest {
+class AuthorServletTest {
 
-    private final PublishingHouseServlet servlet = new PublishingHouseServlet();
-    private final PublishingHouseService service = Mockito.mock(PublishingHouseService.class);
+    private final AuthorServlet servlet = new AuthorServlet();
+    private final AuthorService service = Mockito.mock(AuthorService.class);
     private final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     private final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException, IOException {
+        List<AuthorEntity> entities = new ArrayList<>();
+        entities.add(new AuthorEntity());
+
+        Mockito.when(service.getAll()).thenReturn(entities);
+        Mockito.when(service.getById(1L)).thenReturn(new AuthorEntity());
+
         PrintWriter writer = Mockito.mock(PrintWriter.class);
+
         Mockito.when(response.getWriter()).thenReturn(writer);
 
-        Field field = servlet.getClass().getDeclaredField("publishingHouseService");
+        Field field = servlet.getClass().getDeclaredField("authorService");
         field.setAccessible(true);
         field.set(servlet, service);
     }
@@ -41,35 +48,21 @@ class PublishingHoseServletTest {
     @Test
     void doGetWithoutParameter() throws ServletException, IOException {
         Mockito.when(request.getQueryString()).thenReturn(null);
-
-        List<PublishingHouseEntity> entities = new ArrayList<>();
-        entities.add(new PublishingHouseEntity());
-        Mockito.when(service.getAll()).thenReturn(entities);
-
         servlet.doGet(request, response);
-
         Mockito.verify(request, Mockito.never()).getParameter("id");
         Mockito.verify(service, Mockito.times(1)).getAll();
     }
 
     @Test
     void doGetWithParameterId() throws ServletException, IOException {
+        List<BookEntity> entities = new ArrayList<>();
+        BookEntity entity = new BookEntity();
+        entity.setPublishingHouse(new PublishingHouseEntity());
+        entities.add(entity);
+        Mockito.when(service.getBooks(1L)).thenReturn(entities);
         Mockito.when(request.getQueryString()).thenReturn("id=1");
         Mockito.when(request.getParameter("id")).thenReturn("1");
-
-        PublishingHouseEntity entity = new PublishingHouseEntity();
-        entity.setId(1L);
-        entity.setName("name");
-        Mockito.when(service.getById(1L)).thenReturn(entity);
-
-        List<BookEntity> books = new ArrayList<>();
-        BookEntity book = new BookEntity();
-        book.setPublishingHouse(new PublishingHouseEntity());
-        books.add(book);
-        Mockito.when(service.getBooks(1L)).thenReturn(books);
-
         servlet.doGet(request, response);
-
         Mockito.verify(request, Mockito.times(1)).getParameter("id");
         Mockito.verify(service, Mockito.times(1)).getById(1L);
         Mockito.verify(service, Mockito.times(1)).getBooks(1L);
@@ -78,12 +71,11 @@ class PublishingHoseServletTest {
     @Test
     void doPost() throws ServletException, IOException {
         Mockito.when(request.getParameter("name")).thenReturn("name");
-        PublishingHouseEntity entity = new PublishingHouseEntity();
-        entity.setName("name");
-
+        Mockito.when(request.getParameter("surname")).thenReturn("surname");
         servlet.doPost(request, response);
-
-        Mockito.verify(request, Mockito.times(1)).getParameter("name");
+        AuthorEntity entity = new AuthorEntity();
+        entity.setName("name");
+        entity.setSurname("surname");
         Mockito.verify(service, Mockito.times(1)).save(entity);
     }
 
@@ -91,14 +83,11 @@ class PublishingHoseServletTest {
     void doPut() throws ServletException, IOException {
         Mockito.when(request.getParameter("id")).thenReturn("1");
         Mockito.when(request.getParameter("name")).thenReturn("name");
-        PublishingHouseEntity entity = new PublishingHouseEntity();
-        entity.setId(1L);
-        entity.setName("name");
-
+        Mockito.when(request.getParameter("surname")).thenReturn("surname");
         servlet.doPut(request, response);
-
-        Mockito.verify(request, Mockito.times(1)).getParameter("id");
-        Mockito.verify(request, Mockito.times(1)).getParameter("name");
+        AuthorEntity entity = new AuthorEntity();
+        entity.setName("name");
+        entity.setSurname("surname");
         Mockito.verify(service, Mockito.times(1)).update(1L, entity);
     }
 
@@ -106,7 +95,6 @@ class PublishingHoseServletTest {
     void doDelete() throws ServletException, IOException {
         Mockito.when(request.getParameter("id")).thenReturn("1");
         servlet.doDelete(request, response);
-        Mockito.verify(request, Mockito.times(1)).getParameter("id");
         Mockito.verify(service, Mockito.times(1)).delete(1L);
     }
 }

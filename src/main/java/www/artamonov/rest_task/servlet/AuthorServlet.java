@@ -67,7 +67,6 @@ public class AuthorServlet extends HttpServlet {
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-        super.doGet(req, resp);
     }
 
     @Override

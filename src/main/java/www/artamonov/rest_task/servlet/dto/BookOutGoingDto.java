@@ -1,5 +1,7 @@
 package www.artamonov.rest_task.servlet.dto;
 
+import java.util.Objects;
+
 public class BookOutGoingDto {
     private Long id;
     private String name;
@@ -46,5 +48,18 @@ public class BookOutGoingDto {
 
     public void setPublishingHouse(PublishingHouseOutGoingDto publishingHouse) {
         this.publishingHouse = publishingHouse;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookOutGoingDto that = (BookOutGoingDto) o;
+        return publicationYear == that.publicationYear && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(publishingHouse, that.publishingHouse);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, publicationYear, publishingHouse);
     }
 }
