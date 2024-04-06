@@ -1,11 +1,10 @@
 package www.artamonov.rest_task.repository.impl;
 
 import www.artamonov.rest_task.db.ConnectionManager;
-import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
-import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.mapper.BookRepository;
+import www.artamonov.rest_task.repository.result_mapper.ResultMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +12,13 @@ import java.util.List;
 
 public class BookRepositoryImpl implements BookRepository {
 
-    private final ConnectionManager connectionManager = new PostgresConnectionManager();
+    private final ConnectionManager connectionManager;
+    private final ResultMapper<BookEntity> resultMapper;
+
+    public BookRepositoryImpl(ConnectionManager connectionManager, ResultMapper<BookEntity> resultMapper) {
+        this.connectionManager = connectionManager;
+        this.resultMapper = resultMapper;
+    }
     @Override
     public void create(BookEntity bookEntity) {
         String query = "INSERT INTO book (name, year_of_publication, publishing_house_id) VALUES (?, ?, ?);";
@@ -31,18 +36,12 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public BookEntity findById(Long id) {
         String query = "SELECT * FROM book WHERE id = ?;";
-        BookEntity entity = new BookEntity();
+        BookEntity entity = null;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                entity.setId(id);
-                entity.setName(resultSet.getString(2));
-                entity.setPublicationYear(resultSet.getInt(3));
-                entity.setPublishingHouse(new PublishingHouseEntity());
-                entity.getPublishingHouse().setId(resultSet.getLong(4));
-            }
+            entity = resultMapper.map(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -78,20 +77,12 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public List<BookEntity> findAll() {
-        List<BookEntity> entities = new ArrayList<>();
+        List<BookEntity> entities = null;
         String query = "SELECT * FROM book;";
         try (Connection connection = connectionManager.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                BookEntity entity = new BookEntity();
-                entity.setId(resultSet.getLong(1));
-                entity.setName(resultSet.getString(2));
-                entity.setPublicationYear(resultSet.getInt(3));
-                entity.setPublishingHouse(new PublishingHouseEntity());
-                entity.getPublishingHouse().setId(resultSet.getLong(4));
-                entities.add(entity);
-            }
+            entities = resultMapper.mapAll(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }

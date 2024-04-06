@@ -5,9 +5,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.impl.PublishingHouseRepositoryImpl;
+import www.artamonov.rest_task.repository.result_mapper.PublishingHouseResultMapper;
 import www.artamonov.rest_task.service.impl.PublishingHouseServiceImpl;
 import www.artamonov.rest_task.service.mapper.PublishingHouseService;
 import www.artamonov.rest_task.servlet.dto.BookOutGoingDto;
@@ -26,7 +28,8 @@ import java.util.List;
 @WebServlet("/publishing_houses")
 public class PublishingHouseServlet extends HttpServlet {
 
-    private final PublishingHouseService publishingHouseService = new PublishingHouseServiceImpl(new PublishingHouseRepositoryImpl());
+    private final PublishingHouseService publishingHouseService = new PublishingHouseServiceImpl(
+            new PublishingHouseRepositoryImpl(new PostgresConnectionManager(), new PublishingHouseResultMapper()));
     private final PublishingHouseDtoMapper publishingHouseDtoMapper = new PublishingHouseDtoMapperImpl();
     private final BookDtoMapper bookDtoMapper = new BookDtoMapperImpl();
     @Override

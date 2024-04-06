@@ -1,11 +1,11 @@
 package www.artamonov.rest_task.repository.impl;
 
 import www.artamonov.rest_task.db.ConnectionManager;
-import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.mapper.AuthorRepository;
+import www.artamonov.rest_task.repository.result_mapper.ResultMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +13,14 @@ import java.util.List;
 
 public class AuthorRepositoryImpl implements AuthorRepository {
 
-    private final ConnectionManager connectionManager = new PostgresConnectionManager();
+    private final ConnectionManager connectionManager;
+    private final ResultMapper<AuthorEntity> resultMapper;
+
+    public AuthorRepositoryImpl(ConnectionManager connectionManager, ResultMapper<AuthorEntity> resultMapper) {
+        this.connectionManager = connectionManager;
+        this.resultMapper = resultMapper;
+    }
+
     @Override
     public void create(AuthorEntity authorEntity) {
         String query = "INSERT INTO author (name, surname) VALUES (?, ?);";
@@ -30,16 +37,12 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public AuthorEntity findById(Long id) {
         String query = "SELECT * FROM author WHERE id = ?";
-        AuthorEntity entity = new AuthorEntity();
+        AuthorEntity entity = null;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                entity.setId(resultSet.getLong(1));
-                entity.setName(resultSet.getString(2));
-                entity.setSurname(resultSet.getString(3));
-            }
+            entity = resultMapper.map(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,18 +77,12 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public List<AuthorEntity> findAll() {
-        List<AuthorEntity> entities = new ArrayList<>();
+        List<AuthorEntity> entities = null;
         String query = "SELECT * FROM author;";
         try (Connection connection = connectionManager.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                AuthorEntity entity = new AuthorEntity();
-                entity.setId(resultSet.getLong(1));
-                entity.setName(resultSet.getString(2));
-                entity.setSurname(resultSet.getString(3));
-                entities.add(entity);
-            }
+            entities = resultMapper.mapAll(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }

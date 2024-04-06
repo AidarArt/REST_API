@@ -1,7 +1,6 @@
 package www.artamonov.rest_task.repository.impl;
 
 import www.artamonov.rest_task.db.ConnectionManager;
-import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.repository.mapper.AuthorBookRepository;
 
 import java.sql.Connection;
@@ -10,7 +9,11 @@ import java.sql.SQLException;
 
 public class AuthorBookRepositoryImpl implements AuthorBookRepository {
 
-    private final ConnectionManager connectionManager = new PostgresConnectionManager();
+    private final ConnectionManager connectionManager;
+
+    public AuthorBookRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     @Override
     public void addAuthorBook(Long bookId, Long authorId) {

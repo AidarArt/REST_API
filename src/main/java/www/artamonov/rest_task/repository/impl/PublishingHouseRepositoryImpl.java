@@ -1,18 +1,22 @@
 package www.artamonov.rest_task.repository.impl;
 
 import www.artamonov.rest_task.db.ConnectionManager;
-import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.mapper.PublishingHouseRepository;
+import www.artamonov.rest_task.repository.result_mapper.ResultMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PublishingHouseRepositoryImpl implements PublishingHouseRepository {
-
-    private final ConnectionManager connectionManager = new PostgresConnectionManager();
+    private final ConnectionManager connectionManager;
+    private final ResultMapper<PublishingHouseEntity> resultMapper;
+    public PublishingHouseRepositoryImpl(ConnectionManager connectionManager, ResultMapper<PublishingHouseEntity> resultMapper) {
+        this.connectionManager = connectionManager;
+        this.resultMapper = resultMapper;
+    }
     public void create(PublishingHouseEntity publishingHouseEntity) {
         String query = "INSERT INTO publishing_house (name) VALUES (?);";
         try (Connection connection = connectionManager.getConnection();
@@ -31,10 +35,7 @@ public class PublishingHouseRepositoryImpl implements PublishingHouseRepository 
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                entity.setId(id);
-                entity.setName(resultSet.getString(2));
-            }
+            entity = resultMapper.map(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,17 +67,12 @@ public class PublishingHouseRepositoryImpl implements PublishingHouseRepository 
 
     @Override
     public List<PublishingHouseEntity> findAll() {
-        List<PublishingHouseEntity> entities = new ArrayList<>();
+        List<PublishingHouseEntity> entities = null;
         String query = "SELECT * FROM publishing_house;";
         try (Connection connection = connectionManager.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                PublishingHouseEntity entity = new PublishingHouseEntity();
-                entity.setId(resultSet.getLong(1));
-                entity.setName(resultSet.getString(2));
-                entities.add(entity);
-            }
+            entities = resultMapper.mapAll(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }

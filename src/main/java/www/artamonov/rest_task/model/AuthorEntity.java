@@ -1,6 +1,7 @@
 package www.artamonov.rest_task.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AuthorEntity {
     private Long id;
@@ -48,5 +49,27 @@ public class AuthorEntity {
 
     public void setBooks(List<BookEntity> books) {
         this.books = books;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorEntity entity = (AuthorEntity) o;
+        return Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(surname, entity.surname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
 }

@@ -5,11 +5,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.impl.BookRepositoryImpl;
 import www.artamonov.rest_task.repository.impl.PublishingHouseRepositoryImpl;
+import www.artamonov.rest_task.repository.result_mapper.BookResultMapper;
+import www.artamonov.rest_task.repository.result_mapper.PublishingHouseResultMapper;
 import www.artamonov.rest_task.service.impl.BookServiceImpl;
 import www.artamonov.rest_task.service.mapper.BookService;
 import www.artamonov.rest_task.servlet.dto.AuthorOutGoingDto;
@@ -28,7 +31,9 @@ import java.util.List;
 @WebServlet("/books")
 public class BookServlet extends HttpServlet {
 
-    private final BookService bookService = new BookServiceImpl(new BookRepositoryImpl(), new PublishingHouseRepositoryImpl());
+    private final BookService bookService = new BookServiceImpl(
+            new BookRepositoryImpl(new PostgresConnectionManager(), new BookResultMapper()),
+            new PublishingHouseRepositoryImpl(new PostgresConnectionManager(), new PublishingHouseResultMapper()));
     private final BookDtoMapper bookDtoMapper = new BookDtoMapperImpl();
     private final AuthorDtoMapper authorDtoMapper = new AuthorDtoMapperImpl();
     private static final String WRITING_INFO = "id: %s, название: %s, год издания: %s\n Издательство: %s\n";
@@ -72,6 +77,7 @@ public class BookServlet extends HttpServlet {
             incomingDto.setPublicationYear(Integer.parseInt(req.getParameter("year")));
             incomingDto.setPublishingHouse(new PublishingHouseEntity());
             incomingDto.getPublishingHouse().setId(Long.valueOf(req.getParameter("ph_id")));
+            bookService.save(bookDtoMapper.map(incomingDto));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

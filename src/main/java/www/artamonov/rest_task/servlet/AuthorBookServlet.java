@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import www.artamonov.rest_task.db.PostgresConnectionManager;
 import www.artamonov.rest_task.repository.impl.AuthorBookRepositoryImpl;
 import www.artamonov.rest_task.service.impl.AuthorBookServiceImpl;
 import www.artamonov.rest_task.service.mapper.AuthorBookService;
@@ -13,7 +14,8 @@ import java.io.IOException;
 
 @WebServlet("/book/authors")
 public class AuthorBookServlet extends HttpServlet {
-    private final AuthorBookService service = new AuthorBookServiceImpl(new AuthorBookRepositoryImpl());
+    private final AuthorBookService service = new AuthorBookServiceImpl(
+            new AuthorBookRepositoryImpl(new PostgresConnectionManager()));
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
