@@ -3,8 +3,6 @@ package www.artamonov.rest_task.service.impl;
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
 import www.artamonov.rest_task.model.PublishingHouseEntity;
-import www.artamonov.rest_task.repository.impl.BookRepositoryImpl;
-import www.artamonov.rest_task.repository.impl.PublishingHouseRepositoryImpl;
 import www.artamonov.rest_task.repository.mapper.BookRepository;
 import www.artamonov.rest_task.repository.mapper.PublishingHouseRepository;
 import www.artamonov.rest_task.service.mapper.BookService;
@@ -12,8 +10,14 @@ import www.artamonov.rest_task.service.mapper.BookService;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
-    private final BookRepository repository = new BookRepositoryImpl();
-    private final PublishingHouseRepository publishingHouseRepository = new PublishingHouseRepositoryImpl();
+    private final BookRepository repository;
+
+    public BookServiceImpl(BookRepository repository, PublishingHouseRepository publishingHouseRepository) {
+        this.repository = repository;
+        this.publishingHouseRepository = publishingHouseRepository;
+    }
+
+    private final PublishingHouseRepository publishingHouseRepository;
     @Override
     public BookEntity getById(Long id) {
         BookEntity entity = repository.findById(id);

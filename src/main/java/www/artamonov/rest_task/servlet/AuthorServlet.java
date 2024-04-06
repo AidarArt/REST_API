@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
+import www.artamonov.rest_task.repository.impl.AuthorRepositoryImpl;
 import www.artamonov.rest_task.service.impl.AuthorServiceImpl;
 import www.artamonov.rest_task.service.mapper.AuthorService;
 import www.artamonov.rest_task.servlet.dto.AuthorIncomingDto;
@@ -25,7 +26,7 @@ import java.util.List;
 @WebServlet("/authors")
 public class AuthorServlet extends HttpServlet {
 
-    private final AuthorService authorService = new AuthorServiceImpl();
+    private final AuthorService authorService = new AuthorServiceImpl(new AuthorRepositoryImpl());
     private final AuthorDtoMapper dtoMapper = new AuthorDtoMapperImpl();
     private final BookDtoMapper bookDtoMapper = new BookDtoMapperImpl();
 

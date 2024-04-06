@@ -2,14 +2,17 @@ package www.artamonov.rest_task.service.impl;
 
 import www.artamonov.rest_task.model.AuthorEntity;
 import www.artamonov.rest_task.model.BookEntity;
-import www.artamonov.rest_task.repository.impl.AuthorRepositoryImpl;
 import www.artamonov.rest_task.repository.mapper.AuthorRepository;
 import www.artamonov.rest_task.service.mapper.AuthorService;
 
 import java.util.List;
 
 public class AuthorServiceImpl implements AuthorService {
-    private final AuthorRepository repository = new AuthorRepositoryImpl();
+    private final AuthorRepository repository;
+
+    public AuthorServiceImpl(AuthorRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<AuthorEntity> getAll() {
