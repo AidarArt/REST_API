@@ -17,7 +17,7 @@ public class AuthorBookRepositoryImpl implements AuthorBookRepository {
 
     @Override
     public void addAuthorBook(Long bookId, Long authorId) {
-        String query = "INSERT INTO author_book (book_id, author_id) VALUES (?, ?);" ;
+        String query = "INSERT INTO author_book (book_id, author_id) VALUES (?, ?);";
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, bookId);

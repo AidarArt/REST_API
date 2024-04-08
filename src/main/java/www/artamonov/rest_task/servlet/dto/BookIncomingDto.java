@@ -11,13 +11,6 @@ public class BookIncomingDto {
     public BookIncomingDto() {
     }
 
-    public BookIncomingDto(Long id, String name, int publicationYear, PublishingHouseEntity publishingHouse) {
-        this.id = id;
-        this.name = name;
-        this.publicationYear = publicationYear;
-        this.publishingHouse = publishingHouse;
-    }
-
     public Long getId() {
         return id;
     }

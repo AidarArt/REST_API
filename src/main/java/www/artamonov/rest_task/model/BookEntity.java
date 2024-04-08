@@ -13,12 +13,11 @@ public class BookEntity {
     public BookEntity() {
     }
 
-    public BookEntity(Long id, String name, int publicationYear, PublishingHouseEntity publishingHouse, List<AuthorEntity> authors) {
+    public BookEntity(Long id, String name, int publicationYear, PublishingHouseEntity publishingHouse) {
         this.id = id;
         this.name = name;
         this.publicationYear = publicationYear;
         this.publishingHouse = publishingHouse;
-        this.authors = authors;
     }
 
     public Long getId() {

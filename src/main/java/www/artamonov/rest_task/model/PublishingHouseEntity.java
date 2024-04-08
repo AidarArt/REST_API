@@ -11,10 +11,9 @@ public class PublishingHouseEntity {
     public PublishingHouseEntity() {
     }
 
-    public PublishingHouseEntity(Long id, String name, List<BookEntity> books) {
+    public PublishingHouseEntity(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.books = books;
     }
 
     public Long getId() {

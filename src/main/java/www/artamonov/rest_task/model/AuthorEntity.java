@@ -12,11 +12,10 @@ public class AuthorEntity {
     public AuthorEntity() {
     }
 
-    public AuthorEntity(Long id, String name, String surname, List<BookEntity> books) {
+    public AuthorEntity(Long id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.books = books;
     }
 
     public Long getId() {
@@ -62,14 +61,5 @@ public class AuthorEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, surname);
-    }
-
-    @Override
-    public String toString() {
-        return "AuthorEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
     }
 }
