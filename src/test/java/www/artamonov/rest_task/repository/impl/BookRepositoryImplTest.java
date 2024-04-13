@@ -11,10 +11,7 @@ import www.artamonov.rest_task.model.PublishingHouseEntity;
 import www.artamonov.rest_task.repository.mapper.BookRepository;
 import www.artamonov.rest_task.repository.result_mapper.BookResultMapper;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookRepositoryImplTest {
@@ -90,5 +87,23 @@ class BookRepositoryImplTest {
 
         Mockito.verify(statement, Mockito.times(1)).setLong(1, 1L);
         Mockito.verify(statement, Mockito.times(1)).executeUpdate();
+    }
+
+    @Test
+    void findAll() throws SQLException {
+        String query = "SELECT * FROM book;";
+        Statement statement = Mockito.mock(Statement.class);
+        Mockito.when(connection.createStatement()).thenReturn(statement);
+
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        Mockito.when(statement.executeQuery(query)).thenReturn(resultSet);
+
+        Mockito.when(resultSet.getLong(1)).thenReturn(1L);
+        Mockito.when(resultSet.getString(2)).thenReturn("name");
+        Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
+
+        repository.findAll();
+
+        Mockito.verify(statement, Mockito.times(1)).executeQuery(query);
     }
 }
